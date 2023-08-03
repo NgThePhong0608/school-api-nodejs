@@ -3,8 +3,8 @@ const Admin = require("../../model/Staff/Admin");
 const ClassLevel = require("../../model/Academic/ClassLevel");
 
 class classLevel {
-    // @desc Create academic term
-    // @route POST api/v1/academic-terms/
+    // @desc Create class level
+    // @route POST api/v1/class-levels/
     // @access private
     createClassLevel = AsyncHandler(async (req, res) => {
         const { name, description } = req?.body;
@@ -31,8 +31,8 @@ class classLevel {
             });
         }
     });
-    // @desc Get all academic term
-    // @route GET api/v1/academic-terms/
+    // @desc Get all class level
+    // @route GET api/v1/class-levels/
     // @access private
     getClassLevels = AsyncHandler(async (req, res) => {
         const classLevelData = await ClassLevel.find();
@@ -44,8 +44,8 @@ class classLevel {
         });
     });
 
-    // @desc Get one academic term
-    // @route GET api/v1/academic-terms/:id
+    // @desc Get one class level
+    // @route GET api/v1/class-levels/:id
     // @access private
     getOneClassLevel = AsyncHandler(async (req, res) => {
         const id = req?.params?.id;
@@ -57,8 +57,8 @@ class classLevel {
         });
     });
 
-    // @desc Update academic term
-    // @route PUT api/v1/academic-terms/
+    // @desc Update class level
+    // @route PUT api/v1/class-levels/:id
     // @access private
     updateClassLevel = AsyncHandler(async (req, res) => {
         const { name, description } = req.body;
@@ -87,8 +87,8 @@ class classLevel {
         }
     });
 
-    // @desc Delete academic term
-    // @route DELETE api/v1/academic-terms/
+    // @desc Delete class level
+    // @route DELETE api/v1/class-levels/:id
     // @access private
     deleteClassLevel = AsyncHandler(async (req, res) => {
         const id = req?.params?.id;

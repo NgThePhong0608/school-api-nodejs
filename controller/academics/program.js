@@ -3,8 +3,8 @@ const Admin = require("../../model/Staff/Admin");
 const Program = require("../../model/Academic/Program");
 
 class programController {
-    // @desc Create academic term
-    // @route POST api/v1/academic-terms/
+    // @desc Create program
+    // @route POST api/v1/programs/
     // @access private
     createProgram = AsyncHandler(async (req, res) => {
         const { name, description, duration, code } = req?.body;
@@ -33,8 +33,8 @@ class programController {
             });
         }
     });
-    // @desc Get all academic term
-    // @route GET api/v1/academic-terms/
+    // @desc Get all program
+    // @route GET api/v1/programs/
     // @access private
     getPrograms = AsyncHandler(async (req, res) => {
         const programData = await Program.find();
@@ -46,12 +46,12 @@ class programController {
         });
     });
 
-    // @desc Get one academic term
-    // @route GET api/v1/academic-terms/:id
+    // @desc Get one program
+    // @route GET api/v1/programs/:id
     // @access private
     getOneProgram = AsyncHandler(async (req, res) => {
         const id = req?.params?.id;
-        const programData = await Program.findById(id);
+        const programData = await Program.findById(id).populate("subjects");
         res.status(200).json({
             status: "success",
             data: programData,
@@ -59,8 +59,8 @@ class programController {
         });
     });
 
-    // @desc Update academic term
-    // @route PUT api/v1/academic-terms/
+    // @desc Update program
+    // @route PUT api/v1/programs/:id
     // @access private
     updateProgram = AsyncHandler(async (req, res) => {
         const { name, description, duration, code } = req?.body;
@@ -91,8 +91,8 @@ class programController {
         }
     });
 
-    // @desc Delete academic term
-    // @route DELETE api/v1/academic-terms/
+    // @desc Delete program
+    // @route DELETE api/v1/programs/:id
     // @access private
     deleteProgram = AsyncHandler(async (req, res) => {
         const id = req?.params?.id;

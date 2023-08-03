@@ -19,7 +19,7 @@ class academicTerm {
                 duration,
                 createdBy: req?.userAuth?._id,
             });
-            
+
             // push to admin field
             const admin = await Admin.findById(req?.userAuth?._id);
             admin.academicTerms.push(academicTermCreated?._id);
@@ -59,7 +59,7 @@ class academicTerm {
     });
 
     // @desc Update academic term
-    // @route PUT api/v1/academic-terms/
+    // @route PUT api/v1/academic-terms/:id
     // @access private
     updateAcademicTerm = AsyncHandler(async (req, res) => {
         const { name, description, duration } = req.body;
@@ -90,7 +90,7 @@ class academicTerm {
     });
 
     // @desc Delete academic term
-    // @route DELETE api/v1/academic-terms/
+    // @route DELETE api/v1/academic-terms/:id
     // @access private
     deleteAcademicTerm = AsyncHandler(async (req, res) => {
         const id = req?.params?.id;

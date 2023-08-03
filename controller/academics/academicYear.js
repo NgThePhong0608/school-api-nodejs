@@ -59,7 +59,7 @@ class academicYear {
     });
 
     // @desc Update academic year
-    // @route PUT api/v1/academic-years/
+    // @route PUT api/v1/academic-years/:id
     // @access private
     updateAcademicYear = AsyncHandler(async (req, res) => {
         const { name, fromYear, toYear } = req.body;
@@ -90,7 +90,7 @@ class academicYear {
     });
 
     // @desc Delete academic year
-    // @route DELETE api/v1/academic-years/
+    // @route DELETE api/v1/academic-years/:id
     // @access private
     deleteAcademicYear = AsyncHandler(async (req, res) => {
         const id = req?.params?.id;
