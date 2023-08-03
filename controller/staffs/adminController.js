@@ -13,8 +13,6 @@ class adminController {
         if (adminFound) {
             throw new Error("Email already existed !");
         }
-        /* const salt = await bcrypt.genSalt(15);
-        const hashedPassword = await bcrypt.hash(password, salt); */
         //register
         const admin = await Admin.create({
             name,
@@ -33,9 +31,7 @@ class adminController {
     // @access private
     login = AsyncHandler(async (req, res) => {
         const { email, password } = req?.body;
-        console.log(password);
         const admin = await Admin.findOne({ email });
-        console.log(admin.password);
         if (!admin) {
             return res.status(404).json({
                 status: "failed",
@@ -50,25 +46,12 @@ class adminController {
                 .json({ message: "Invalid login crendentials" });
         } else {
             return res.status(200).json({
-                data: generateToken(admin._id),
                 message: "Admin logged in successfully",
+                data: generateToken(admin._id),
                 user: admin,
             });
         }
     });
-
-    /*     logout = AsyncHandler(async (req, res) => {
-        const header = req.headers;
-        const token =
-            header &&
-            header.authorization &&
-            header.authorization.split(" ")[1];
-        localStorage.removeItem(token);
-        res.status(200).json({
-            status: "success",
-            message: "Logout admin successfully",
-        });
-    }); */
 
     // @desc Get all admins
     // @route POST api/v1/admins/
