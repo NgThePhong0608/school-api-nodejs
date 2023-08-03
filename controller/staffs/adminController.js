@@ -91,7 +91,9 @@ class adminController {
         // console.log(id);
         const admin = await Admin.findById(id)
             .select("-updatedAt -createdAt -password")
-            .populate("academicYears academicTerms classLevels programs");
+            .populate(
+                "academicYears academicTerms classLevels programs yearGroups"
+            );
         // console.log(admin);
         if (!admin) {
             throw new Error("Admin not found");
