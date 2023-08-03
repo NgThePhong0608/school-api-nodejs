@@ -67,14 +67,14 @@ const adminSchema = new mongoose.Schema(
 );
 
 // hashpassword
-adminSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) {
-        next();
-    }
-    const salt = await bcrypt.genSalt(15);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-});
+// adminSchema.pre("save", async function (next) {
+//     if (!this.isModified("password")) {
+//         next();
+//     }
+//     const salt = await bcrypt.genSalt(15);
+//     this.password = await bcrypt.hash(this.password, salt);
+//     next();
+// });
 
 // verify password
 adminSchema.methods.verifyPassword = async function (password) {
