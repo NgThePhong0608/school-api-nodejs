@@ -66,7 +66,7 @@ const studentSchema = new mongoose.Schema(
     program: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Program",
-      required: true,
+      // required: true,
     },
 
     isPromotedToLevel200: {
