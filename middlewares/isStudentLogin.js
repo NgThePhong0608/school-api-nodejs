@@ -8,7 +8,7 @@ const isStudentLogin = async (req, res, next) => {
     // const token = header.authorization.split(" ")[1];
     const token =
         header && header.authorization && header.authorization.split(" ")[1];
-    console.log(token);
+    // console.log(token);
     // verify token
     const verify = verifyToken(token);
     // console.log(verify);

@@ -43,4 +43,10 @@ studentRouter.put(
     studentController.adminUpdateStudent
 );
 
+studentRouter.post(
+    "/exam/:examId/write",
+    isStudentLogin,
+    isStudent,
+    studentController.writeExam
+);
 module.exports = studentRouter;

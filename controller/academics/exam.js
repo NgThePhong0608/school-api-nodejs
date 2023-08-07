@@ -19,10 +19,13 @@ class examController {
             examType,
             academicYear,
             classLevel,
+            createdBy,
         } = req?.body;
-        console.log(name);
+        // console.log(name);
         // find teacher
-        const teacherFound = await Teacher.findById(req?.userAuth?._id);
+        const id = req?.userAuth?._id;
+        console.log(id);
+        const teacherFound = await Teacher.findById(id);
         if (!teacherFound) {
             throw new Error("Teacher not found");
         }
@@ -62,7 +65,12 @@ class examController {
     // @route GET api/v1/exams/
     // @access private
     getExams = AsyncHandler(async (req, res) => {
-        const exams = await Exam.find();
+        const exams = await Exam.find().populate({
+            path: "questions",
+            populate: {
+                path: "createdBy",
+            },
+        });
         res.status(200).json({
             length: exams.length,
             status: "success",
@@ -76,7 +84,12 @@ class examController {
     // @access private
     getOneExam = AsyncHandler(async (req, res) => {
         const id = req?.params?.id;
-        const exam = await Exam.findById(id);
+        const exam = await Exam.findById(id).populate({
+            path: "questions",
+            populate: {
+                path: "createdBy",
+            },
+        });
         res.status(200).json({
             status: "success",
             data: exam,
@@ -138,8 +151,8 @@ class examController {
     // @desc Delete exam
     // @route DELETE api/v1/exam/:id
     // @access private
-    deleteSubject = AsyncHandler(async (req, res) => {
-        const id = req?.params?.id;
+    deleteExam = AsyncHandler(async (req, res) => {
+        const id = req?.userAuth?._id;
         await Exam.findByIdAndDelete(id);
         res.status(200).json({
             status: "success",

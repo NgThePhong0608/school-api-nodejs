@@ -3,6 +3,7 @@ const Student = require("../../model/Staff/Student");
 const { hashPassword, isPassMatched } = require("../../utils/helpers");
 const generateToken = require("../../utils/generateToken");
 const Admin = require("../../model/Staff/Admin");
+const Exam = require("../../model/Academic/Exam");
 
 class studentController {
     // @desc Admin register student
@@ -200,6 +201,29 @@ class studentController {
             status: "success",
             message: "Student updated successfully",
             data: studentUpdate,
+        });
+    });
+
+    // @desc Student taking exam
+    // @route POST api/v1/students/exam/:examId/write
+    // @access Student only
+    writeExam = AsyncHandler(async (req, res) => {
+        const studentFound = await Student.findById(req?.userAuth?._id);
+        if (!studentFound) throw new Error("Student not found");
+
+        const examFound = await Exam.findById(req?.params?.examId).populate(
+            "questions"
+        );
+        if (!examFound) throw new Error("Exam not found");
+        /* console.log({
+            studentFound,
+            examFound,
+        }); */
+        // get questions
+        const questions = examFound.questions;
+        res.status(200).json({
+            status: "success",
+            data: questions,
         });
     });
 }

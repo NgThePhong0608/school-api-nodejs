@@ -97,9 +97,14 @@ class teacherController {
     // @access Teacher only
     getTeacherProfile = AsyncHandler(async (req, res) => {
         const id = req?.userAuth?._id;
-        const teacher = await Teacher.findById(id).select(
-            "-password -createdAt -updatedAt"
-        );
+        const teacher = await Teacher.findById(id)
+            .select("-password -createdAt -updatedAt")
+            .populate({
+                path: "examsCreated",
+                populate: {
+                    path: "questions",
+                },
+            });
         if (!teacher) {
             throw new Error("Teacher not found");
         } else {
