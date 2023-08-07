@@ -2,12 +2,19 @@ const express = require("express");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 
-// import router
+// import staffs router
 const adminRouter = require("../routes/staffs/adminRoutes");
+const studentRouter = require("../routes/staffs/studentRoutes");
+const teacherRouter = require("../routes/staffs/teacherRoutes");
+
+// import academics router
+const examRouter = require("../routes/academics/exam");
 const academicYearRouter = require("../routes/academics/academicYear");
 const academicTermsRouter = require("../routes/academics/academicTerm");
 const classLevelRouter = require("../routes/academics/classLevel");
 const programRouter = require("../routes/academics/program");
+const subjectRouter = require("../routes/academics/subject");
+const yearGroupRouter = require("../routes/academics/yearGroup");
 
 const { global, notFound } = require("../middlewares/globalErrorHandler");
 dotenv.config();
@@ -21,9 +28,12 @@ app.use((req, res, next) => {
     next();
 });
 
-// admin routes
+// staff routes
 app.use("/api/v1/admins", adminRouter);
+app.use("/api/v1/teachers", teacherRouter);
+app.use("/api/v1/students", studentRouter);
 
+// academics routes
 // academic year routes
 app.use("/api/v1/academic-years", academicYearRouter);
 
@@ -35,6 +45,15 @@ app.use("/api/v1/class-levels", classLevelRouter);
 
 // program routes
 app.use("/api/v1/programs", programRouter);
+
+// subject routes
+app.use("/api/v1/subjects", subjectRouter);
+
+// year group routes
+app.use("/api/v1/year-groups", yearGroupRouter);
+
+// exam routes
+app.use("/api/v1/exams", examRouter);
 
 // Error middlewares
 app.use(notFound);
