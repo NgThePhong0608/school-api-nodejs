@@ -75,7 +75,7 @@ class adminController {
         const admin = await Admin.findById(id)
             .select("-updatedAt -createdAt -password")
             .populate(
-                "academicYears academicTerms classLevels programs yearGroups"
+                "teachers students academicYears academicTerms classLevels programs yearGroups"
             );
         // console.log(admin);
         if (!admin) {
