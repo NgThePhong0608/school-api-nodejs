@@ -8,6 +8,8 @@ const studentRouter = require("../routes/staffs/studentRoutes");
 const teacherRouter = require("../routes/staffs/teacherRoutes");
 
 // import academics router
+
+const questionRouter = require("../routes/academics/questions");
 const examRouter = require("../routes/academics/exam");
 const academicYearRouter = require("../routes/academics/academicYear");
 const academicTermsRouter = require("../routes/academics/academicTerm");
@@ -32,28 +34,14 @@ app.use((req, res, next) => {
 app.use("/api/v1/admins", adminRouter);
 app.use("/api/v1/teachers", teacherRouter);
 app.use("/api/v1/students", studentRouter);
-
-// academics routes
-// academic year routes
 app.use("/api/v1/academic-years", academicYearRouter);
-
-// academic term routes
 app.use("/api/v1/academic-terms", academicTermsRouter);
-
-// class level routes
 app.use("/api/v1/class-levels", classLevelRouter);
-
-// program routes
 app.use("/api/v1/programs", programRouter);
-
-// subject routes
 app.use("/api/v1/subjects", subjectRouter);
-
-// year group routes
 app.use("/api/v1/year-groups", yearGroupRouter);
-
-// exam routes
 app.use("/api/v1/exams", examRouter);
+app.use("/api/v1/questions", questionRouter);
 
 // Error middlewares
 app.use(notFound);
