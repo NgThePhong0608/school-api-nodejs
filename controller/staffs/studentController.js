@@ -169,8 +169,16 @@ class studentController {
     // @route PUT api/v1/students/:studentId/update/admin
     // @access Admin only
     adminUpdateStudent = AsyncHandler(async (req, res) => {
-        const { classLevels, academicYear, program, name, email, prefectName } =
-            req?.body;
+        const {
+            classLevels,
+            academicYear,
+            program,
+            name,
+            email,
+            prefectName,
+            isSuspended,
+            isWithdrawn,
+        } = req?.body;
         // find the student by id
         const id = req?.params?.studentId;
         const studentFound = await Student.findById(id);
@@ -187,6 +195,8 @@ class studentController {
                     name,
                     email,
                     prefectName,
+                    isSuspended,
+                    isWithdrawn,
                 },
                 $addToSet: {
                     classLevels,
@@ -213,7 +223,7 @@ class studentController {
         if (!studentFound) throw new Error("Student not found");
 
         const examFound = await Exam.findById(req?.params?.examId).populate(
-            "questions"
+            "questions academicTerm"
         );
         if (!examFound) throw new Error("Exam not found");
         /* console.log({
@@ -237,6 +247,13 @@ class studentController {
             throw new Error("You have already taken exams");
         }
 
+        // check if student is suspended/withdraw
+        if (studentFound.isSuspended || studentFound.isWithdrawn) {
+            throw new Error(
+                "You are suspended/withdraw, you can not take the exam"
+            );
+        }
+
         // check answers
         let correctAnswers = 0;
         let wrongAnswers = 0;
@@ -250,7 +267,7 @@ class studentController {
         // check for answers
         for (let i = 0; i < questions.length; i++) {
             const question = questions[i];
-            console.log(question);
+            // console.log(question);
 
             // check
             if (question.correctAnswer === answers[i]) {
@@ -301,23 +318,70 @@ class studentController {
             score,
             status,
             remarks,
-            classLevel: examFound.classLevel,
-            academicTerm: examFound.academicTerm,
-            academicYear: examFound.academicYear,
+            classLevel: examFound?.classLevel,
+            academicTerm: examFound?.academicTerm,
+            academicYear: examFound?.academicYear,
         });
 
-        // save exam result to student
+        //save exam result to student
         studentFound.examResults.push(examResult._id);
         await studentFound.save();
 
+        // promoting student
+        console.log(examFound.academicTerm);
+        if (
+            examFound?.academicTerm?.name === "Third term" &&
+            status === "passed" &&
+            studentFound?.currentClassLevel === "Level 100"
+        ) {
+            // promote to 200
+            studentFound?.classLevels?.push("Level 200");
+            studentFound.currentClassLevel = "Level 200";
+            await studentFound.save();
+            console.log("yes");
+        } else {
+            console.log("No");
+        }
+
+        if (
+            examFound?.academicTerm?.name === "Third term" &&
+            status === "passed" &&
+            studentFound?.currentClassLevel === "Level 200"
+        ) {
+            // promote to 300
+            studentFound?.classLevels?.push("Level 300");
+            studentFound.currentClassLevel = "Level 300";
+            await studentFound.save();
+        } else {
+            console.log("no");
+        }
+
+        if (
+            examFound?.academicTerm?.name === "Third term" &&
+            status === "passed" &&
+            studentFound?.currentClassLevel === "Level 300"
+        ) {
+            // promote to 400
+            studentFound?.classLevels?.push("Level 400");
+            studentFound.currentClassLevel = "Level 400";
+            await studentFound.save();
+        }
+
+        if (
+            examFound?.academicTerm?.name === "Third term" &&
+            status === "passed" &&
+            studentFound?.currentClassLevel === "Level 400"
+        ) {
+            // promote to 400
+            studentFound.isGraduated = true;
+            studentFound.yearGraduated = new Date();
+            studentFound.currentClassLevel = "Level 400";
+            await studentFound.save();
+        }
+
         res.status(200).json({
-            status,
-            correctAnswers,
-            wrongAnswers,
-            score,
-            grade,
-            remarks,
-            data: examResult,
+            status: "Success",
+            data: "You have submitted your exam. Check later for the results",
         });
     });
 }
