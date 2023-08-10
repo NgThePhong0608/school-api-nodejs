@@ -68,8 +68,51 @@ class studentController {
     // @route GET api/v1/students
     // @access Admin only
     getAllStudents = AsyncHandler(async (req, res) => {
-        const students = await Student.find();
+        const query = req?.query;
+        let studentQuery = Student.find();
+        // Paginations
+        const limit = Number(query?.limit);
+        const page = Number(query?.page);
+        const skip = (page - 1) * limit;
+        // get totals record
+        const totals = await Student.countDocuments();
+        const startIdx = (page - 1) * limit,
+            endIdx = page * limit;
+
+        // filtering/searching by name
+        if (query?.name) {
+            studentQuery = Student.find({
+                name: {
+                    $regex: query?.name,
+                    $options: "i", // ignore lowercase or uppercase
+                },
+            });
+        }
+
+        // console.log(query);
+        // pagination results
+
+        // add next page
+        const pagination = {};
+        if (endIdx < totals) {
+            pagination.next = {
+                page: page + 1,
+                limit,
+            };
+        }
+        // add previous page
+        if (startIdx > 0) {
+            pagination.prev = {
+                page: page - 1,
+                limit,
+            };
+        }
+
+        // Excute query
+        const students = await studentQuery.find().skip(skip).limit(limit);
         res.status(200).json({
+            totals,
+            pagination,
             results: students.length,
             status: "success",
             message: "Students fetched successfully",

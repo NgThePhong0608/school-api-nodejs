@@ -68,9 +68,54 @@ class teacherController {
     // @route POST api/v1/teachers/admin/teachers/
     // @access private
     getAllTeachers = AsyncHandler(async (req, res) => {
-        const teachers = await Teacher.find();
+        // query string ?
+        const query = req?.query;
+        let teacherQuery = Teacher.find();
+        // Paginations
+        const limit = Number(query?.limit);
+        const page = Number(query?.page);
+        const skip = (page - 1) * limit;
+        // get totals record
+        const totals = await Teacher.countDocuments();
+        const startIdx = (page - 1) * limit,
+            endIdx = page * limit;
+
+        // filtering/searching by name
+        if (query?.name) {
+            teacherQuery = Teacher.find({
+                name: {
+                    $regex: query?.name,
+                    $options: "i", // ignore lowercase or uppercase
+                },
+            });
+        }
+
+        // console.log(query);
+        // pagination results
+
+        // add next page
+        const pagination = {};
+        if (endIdx < totals) {
+            pagination.next = {
+                page: page + 1,
+                limit,
+            };
+        }
+        // add previous page
+        if (startIdx > 0) {
+            pagination.prev = {
+                page: page - 1,
+                limit,
+            };
+        }
+
+        // Excute query
+        const teachers = await teacherQuery.find().skip(skip).limit(limit);
+
         res.status(200).json({
+            totals,
             results: teachers.length,
+            pagination,
             status: "success",
             message: "Teachers fetched successfully",
             data: teachers,
