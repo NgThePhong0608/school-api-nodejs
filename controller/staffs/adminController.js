@@ -57,56 +57,7 @@ class adminController {
     // @route POST api/v1/admins/
     // @access private
     getAllAdmins = AsyncHandler(async (req, res) => {
-        const query = req?.query;
-        let adminQuery = Admin.find();
-        // Paginations
-        const limit = Number(query?.limit);
-        const page = Number(query?.page);
-        const skip = (page - 1) * limit;
-        // get totals record
-        const totals = await Admin.countDocuments();
-        const startIdx = (page - 1) * limit,
-            endIdx = page * limit;
-
-        // filtering/searching by name
-        if (query?.name) {
-            adminQuery = Admin.find({
-                name: {
-                    $regex: query?.name,
-                    $options: "i", // ignore lowercase or uppercase
-                },
-            });
-        }
-
-        // console.log(query);
-        // pagination results
-
-        // add next page
-        const pagination = {};
-        if (endIdx < totals) {
-            pagination.next = {
-                page: page + 1,
-                limit,
-            };
-        }
-        // add previous page
-        if (startIdx > 0) {
-            pagination.prev = {
-                page: page - 1,
-                limit,
-            };
-        }
-
-        // Excute query
-        const admins = await adminQuery.find().skip(skip).limit(limit);
-        res.status(200).json({
-            totals,
-            pagination,
-            results: admins.length,
-            status: "success",
-            message: "Admins fetched successfully",
-            data: admins,
-        });
+        res.status(200).json(res.results);
     });
 
     // @desc Get single admin

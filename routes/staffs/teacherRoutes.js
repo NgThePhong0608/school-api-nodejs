@@ -2,22 +2,24 @@ const express = require("express");
 const teacherRouter = express.Router();
 
 const teacherController = require("../../controller/staffs/teacherController");
-const isLogIn = require("../../middlewares/isLogIn");
-const isAdmin = require("../../middlewares/isAdmin");
 const isTeacher = require("../../middlewares/isTeacher");
-const isTeacherLogin = require("../../middlewares/isTeacherLogin");
+const advancedResults = require("../../middlewares/advancedResults");
+const Teacher = require("../../model/Staff/Teacher");
+const isAuthenticated = require("../../middlewares/isAuthenticated");
+const roleRestriction = require("../../middlewares/roleRestriction");
+const Admin = require("../../model/Staff/Admin");
 
 teacherRouter.get(
     "/profile",
-    isTeacherLogin,
-    isTeacher,
+    isAuthenticated(Teacher),
+    roleRestriction("teacher"),
     teacherController.getTeacherProfile
 );
 
 teacherRouter.post(
     "/admin/register",
-    isLogIn,
-    isAdmin,
+    isAuthenticated(Admin),
+    roleRestriction("admin"),
     teacherController.adminRegisterTeacher
 );
 
@@ -25,22 +27,28 @@ teacherRouter.post("/login", teacherController.login);
 
 teacherRouter.get(
     "/admin/teachers",
-    isLogIn,
-    isAdmin,
+    isAuthenticated(Admin),
+    roleRestriction("admin"),
+    advancedResults(Teacher, {
+        path: "examsCreated",
+        populate: {
+            path: "questions",
+        },
+    }), // add middlewares to pagination and filtering
     teacherController.getAllTeachers
 );
 
 teacherRouter.get(
     "/:teacherId/admin",
-    isLogIn,
-    isAdmin,
+    isAuthenticated(Admin),
+    roleRestriction("admin"),
     teacherController.getOneTeacher
 );
 
 // teacher update myself
 teacherRouter.put(
     "/update",
-    isTeacherLogin,
+    isAuthenticated(Teacher),
     isTeacher,
     teacherController.update
 );
@@ -48,8 +56,8 @@ teacherRouter.put(
 // admin assign teacher
 teacherRouter.put(
     "/:teacherId/update/admin",
-    isLogIn,
-    isAdmin,
+    isAuthenticated(Admin),
+    roleRestriction("admin"),
     teacherController.adminUpdateTeacher
 );
 

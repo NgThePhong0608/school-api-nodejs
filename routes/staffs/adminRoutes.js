@@ -1,7 +1,10 @@
 const adminRouter = require("express").Router();
 const adminController = require("../../controller/staffs/adminController");
-const isAdmin = require("../../middlewares/isAdmin");
-const isLogIn = require("../../middlewares/isLogIn");
+const advancedResults = require("../../middlewares/advancedResults");
+const isAuthenticated = require("../../middlewares/isAuthenticated");
+const roleRestriction = require("../../middlewares/roleRestriction");
+const Admin = require("../../model/Staff/Admin");
+
 // register
 adminRouter.post("/register", adminController.register);
 
@@ -12,16 +15,35 @@ adminRouter.post("/login", adminController.login);
 // adminRouter.post("/logout", adminController.logout);
 
 // get all
-adminRouter.get("/", adminController.getAllAdmins);
+adminRouter.get(
+    "/",
+    advancedResults(Admin, "teachers students"),
+    adminController.getAllAdmins
+);
 
 // get profile admin
-adminRouter.get("/profile", isLogIn, isAdmin, adminController.getAdminProfile);
+adminRouter.get(
+    "/profile",
+    isAuthenticated(Admin),
+    roleRestriction("admin"),
+    adminController.getAdminProfile
+);
 
 // update admin
-adminRouter.put("/", isLogIn, isAdmin, adminController.update);
+adminRouter.put(
+    "/",
+    isAuthenticated(Admin),
+    roleRestriction("admin"),
+    adminController.update
+);
 
 // delete admin
-adminRouter.delete("/", isLogIn, isAdmin, adminController.delete);
+adminRouter.delete(
+    "/",
+    isAuthenticated(Admin),
+    roleRestriction("admin"),
+    adminController.delete
+);
 
 // suspend
 adminRouter.put("/suspend/teacher/:id", adminController.suspendTeacher);
