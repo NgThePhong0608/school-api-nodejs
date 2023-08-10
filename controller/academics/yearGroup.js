@@ -8,7 +8,10 @@ class yearGroupController {
     // @access private
     createYearGroup = AsyncHandler(async (req, res) => {
         const { name, academicYear } = req?.body;
-
+        const admin = await Admin.findById(req?.userAuth?._id);
+        if (!admin) {
+            throw new Error("Admin not found");
+        }
         // check program exist
         const yearGroup = await YearGroup.findOne({ name });
         if (yearGroup) {
@@ -22,8 +25,6 @@ class yearGroupController {
             });
 
             // push to admin field
-
-            const admin = await Admin.findById(req?.userAuth?._id);
             admin.yearGroups.push(yearGroupCreated?._id);
             await admin.save();
 

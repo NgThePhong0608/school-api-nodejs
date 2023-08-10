@@ -12,25 +12,28 @@ class studentController {
     // @access private
     adminRegisterStudent = AsyncHandler(async (req, res) => {
         const { name, email, password } = req.body;
+        const admin = await Admin.findById(req?.userAuth?._id);
+        if (!admin) {
+            throw new Error("Admin not found");
+        }
         const teacherFound = await Student.findOne({ email });
         if (teacherFound) {
             throw new Error("Email already existed !");
         }
         //register
-        const student = await Student.create({
+        const studentCreate = await Student.create({
             name,
             email,
             password: await hashPassword(password),
         });
 
         // push to admin fields
-        const admin = await Admin.findById(req?.userAuth?._id);
-        admin.students.push(student._id);
+        admin.students.push(studentCreate?._id);
         await admin.save();
 
         res.status(201).json({
             status: "success",
-            data: student,
+            data: studentCreate,
             message: "Student registered successfully",
         });
     });
@@ -96,19 +99,42 @@ class studentController {
     // @access Student only
     getStudentProfile = AsyncHandler(async (req, res) => {
         const id = req?.userAuth?._id;
-        console.log(id);
+        // console.log(id);
         const student = await Student.findById(id)
             .select("-password -createdAt -updatedAt")
-            .populate("examResults program");
+            .populate("examResults");
         if (!student) {
             throw new Error("Student not found");
-        } else {
-            res.status(200).json({
-                status: "success",
-                message: "Student profile fetched succesfully",
-                data: student,
-            });
         }
+        // get student  profile
+        const studentProfile = {
+            studentId: student?.studentId,
+            name: student.name,
+            email: student?.email,
+            currentClassLevel: student?.currentClassLevel,
+            programId: student?.program,
+            dateAmitted: student?.dateAdmitted,
+            isSuspended: student?.isSuspended,
+            isWithdrawn: student?.isWithdrawn,
+            prefectName: student?.prefectName,
+        };
+        // get student exam results
+        const examResults = student?.examResults;
+        // console.log(examResults);
+        // current exam
+        const currentExamResults = examResults[examResults.length - 1];
+        // console.log(currentExamResults);
+        // check if exam is published
+        const isPublished = currentExamResults?.isPublished;
+        // console.log(isPublished);
+        res.status(200).json({
+            status: "success",
+            message: "Student profile fetched succesfully",
+            data: {
+                studentProfile,
+                currentExamResults: isPublished ? currentExamResults : [],
+            },
+        });
     });
 
     // @desc Student update profile
@@ -312,8 +338,8 @@ class studentController {
 
         // generate exam results
         const examResult = await ExamResult.create({
-            student: studentFound._id,
-            exam: examFound._id,
+            studentId: studentFound?.studentId,
+            exam: examFound?._id,
             grade,
             score,
             status,
@@ -321,6 +347,7 @@ class studentController {
             classLevel: examFound?.classLevel,
             academicTerm: examFound?.academicTerm,
             academicYear: examFound?.academicYear,
+            answeredQuestions: answeredQuestion,
         });
 
         //save exam result to student

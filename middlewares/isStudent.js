@@ -1,6 +1,6 @@
 const Student = require("../model/Staff/Student");
 
-const isAdmin = async (req, res, next) => {
+const isStudent = async (req, res, next) => {
     // find user
     const stu_id = req?.userAuth?._id;
     // console.log(stu_id);
@@ -12,4 +12,4 @@ const isAdmin = async (req, res, next) => {
     }
 };
 
-module.exports = isAdmin;
+module.exports = isStudent;

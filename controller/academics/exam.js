@@ -24,7 +24,7 @@ class examController {
         // console.log(name);
         // find teacher
         const id = req?.userAuth?._id;
-        console.log(id);
+        // console.log(id);
         const teacherFound = await Teacher.findById(id);
         if (!teacherFound) {
             throw new Error("Teacher not found");

@@ -10,6 +10,10 @@ class teacherController {
     // @access private
     adminRegisterTeacher = AsyncHandler(async (req, res) => {
         const { name, email, password } = req.body;
+        const admin = await Admin.findById(req?.userAuth?._id);
+        if (!admin) {
+            throw new Error("Admin not found");
+        }
         const teacherFound = await Teacher.findOne({ email });
         if (teacherFound) {
             throw new Error("Email already existed !");
@@ -22,7 +26,6 @@ class teacherController {
         });
 
         // push to admin field
-        const admin = await Admin.findById(req?.userAuth?._id);
         admin.teachers.push(teacherCreate?._id);
         await admin.save();
 

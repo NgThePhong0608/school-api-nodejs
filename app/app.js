@@ -17,6 +17,7 @@ const classLevelRouter = require("../routes/academics/classLevel");
 const programRouter = require("../routes/academics/program");
 const subjectRouter = require("../routes/academics/subject");
 const yearGroupRouter = require("../routes/academics/yearGroup");
+const examResultRouter = require("../routes/academics/examResult");
 
 const { global, notFound } = require("../middlewares/globalErrorHandler");
 dotenv.config();
@@ -42,6 +43,7 @@ app.use("/api/v1/subjects", subjectRouter);
 app.use("/api/v1/year-groups", yearGroupRouter);
 app.use("/api/v1/exams", examRouter);
 app.use("/api/v1/questions", questionRouter);
+app.use("/api/v1/exam-results", examResultRouter);
 
 // Error middlewares
 app.use(notFound);

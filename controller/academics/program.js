@@ -10,7 +10,7 @@ class programController {
         const { name, description, duration, code } = req?.body;
         const program = await Program.findOne({ name });
         if (program) {
-            throw new Error("Class level has already existed");
+            throw new Error("Program has already existed");
         } else {
             // create
             const programCreated = await Program.create({
@@ -29,7 +29,7 @@ class programController {
             res.status(201).json({
                 status: "success",
                 data: programCreated,
-                message: "Class level created successfully",
+                message: "Program created successfully",
             });
         }
     });
@@ -42,7 +42,7 @@ class programController {
             length: programData.length,
             status: "success",
             data: programData,
-            message: "Class level fetched successfully",
+            message: "Program fetched successfully",
         });
     });
 
@@ -55,7 +55,7 @@ class programController {
         res.status(200).json({
             status: "success",
             data: programData,
-            message: "Class level fetched successfully",
+            message: "Program fetched successfully",
         });
     });
 
@@ -67,7 +67,7 @@ class programController {
         const id = req?.params?.id;
         const programFound = await Program.findOne({ name });
         if (programFound) {
-            throw new Error("Class level name has been existed");
+            throw new Error("Program name has been existed");
         } else {
             const programUpdate = await Program.findByIdAndUpdate(
                 id,
@@ -86,7 +86,7 @@ class programController {
             res.status(201).json({
                 status: "success",
                 data: programUpdate,
-                message: "Class level updated successfully",
+                message: "Program updated successfully",
             });
         }
     });
@@ -99,7 +99,7 @@ class programController {
         await Program.findByIdAndDelete(id);
         res.status(200).json({
             status: "success",
-            message: "Class level deletedd succesfully",
+            message: "Program deletedd succesfully",
         });
     });
 }
