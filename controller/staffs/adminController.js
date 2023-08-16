@@ -43,7 +43,7 @@ class adminController {
         if (!isMatched) {
             return res
                 .status(400)
-                .json({ message: "Invalid login crendentials" });
+                .json({ message: "Invalid login credentials" });
         } else {
             return res.status(200).json({
                 message: "Admin logged in successfully",
@@ -154,90 +154,6 @@ class adminController {
             });
         }
     });
-
-    // @desc Suspend teacher
-    // @route PUT api/v1/admins/suspend/teacher/:id
-    // @access private
-    suspendTeacher = (req, res) => {
-        try {
-            res.status(201).json({
-                status: true,
-                data: "Admin suspend teacher",
-            });
-        } catch (error) {
-            res.status(404).json({ status: false, error: error });
-        }
-    };
-
-    // @desc Unsuspend teacher
-    // @route PUT api/v1/admins/unsuspend/teacher/:id
-    // @access private
-    unsuspendTeacher = (req, res) => {
-        try {
-            res.status(201).json({
-                status: true,
-                data: "Admin unsuspend teacher",
-            });
-        } catch (error) {
-            res.status(404).json({ status: false, error: error });
-        }
-    };
-
-    // @desc Withdraw admin
-    // @route PUT api/v1//admins/withdraw/teacher/:id
-    // @access private
-    withdrawTeacher = (req, res) => {
-        try {
-            res.status(201).json({
-                status: true,
-                data: "Admin withdraw teacher",
-            });
-        } catch (error) {
-            res.status(404).json({ status: false, error: error });
-        }
-    };
-
-    // @desc Unwithdraw admin
-    // @route PUT api/v1//admins/withdraw/teacher/:id
-    // @access private
-    unwithdrawTeacher = (req, res) => {
-        try {
-            res.status(201).json({
-                status: true,
-                data: "Admin unwithdraw teacher",
-            });
-        } catch (error) {
-            res.status(404).json({ status: false, error: error });
-        }
-    };
-
-    // @desc Publish exam
-    // @route PUT api/v1/admins/publish/exam/:id
-    // @access private
-    publishExam = (req, res) => {
-        try {
-            res.status(201).json({
-                status: true,
-                data: "Admin publish exam",
-            });
-        } catch (error) {
-            res.status(404).json({ status: false, error: error });
-        }
-    };
-
-    // @desc Unpublish exam
-    // @route PUT api/v1/admins/unpublish/exam/:id
-    // @access private
-    unPublishExam = (req, res) => {
-        try {
-            res.status(201).json({
-                status: true,
-                data: "Admin unpublish exam",
-            });
-        } catch (error) {
-            res.status(404).json({ status: false, error: error });
-        }
-    };
 }
 
 module.exports = new adminController();
